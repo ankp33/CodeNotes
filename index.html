@@ -12,28 +12,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100px;
+            height: 100vh;
             margin: 0;
         }
         #editor-container {
             position: relative;
             width: 80%;
-            max-width: 1600px;
+            max-width: 800px;
         }
         #logo {
             position: absolute;
             top: -30px;
             left: 0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
             font-size: 20px;
-            font-weight: bold;
-            color: #ff69b4;
-        }
-         #credits {
-            right: 0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
             font-weight: bold;
             color: #ff69b4;
         }
@@ -75,18 +66,35 @@
         ::selection {
             background-color: rgba(255, 255, 255, 0.3);
         }
+        #download-btn {
+            position: absolute;
+            top: -35px;
+            right: 0;
+            background-color: #2d2d2d;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
     <div id="editor-container">
         <div id="logo">&lt;CodeNotes&gt;</div>
-        <textarea id="editor" spellcheck="true"></textarea>
-        <div id="credits">&lt;@ankp33&gt;</div>
+        <textarea id="editor" spellcheck="false"></textarea>
         <div id="view"></div>
+        <button id="download-btn">Download</button>
     </div>
     <script>
         const editor = document.getElementById('editor');
         const view = document.getElementById('view');
+        const downloadBtn = document.getElementById('download-btn');
         
         editor.addEventListener('keydown', function(e) {
             if (e.key === 'Tab') {
@@ -124,6 +132,19 @@
         editor.addEventListener('input', updateView);
         editor.addEventListener('scroll', () => {
             view.scrollTop = editor.scrollTop;
+        });
+
+        downloadBtn.addEventListener('click', function() {
+            const text = editor.value;
+            const blob = new Blob([text], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'codenotes.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         });
 
         // Initial update
