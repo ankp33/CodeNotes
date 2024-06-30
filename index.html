@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Editor</title>
+    <style>
+        body {
+            background-color: #2e2e2e;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .editor {
+            width: 80%;
+            height: 80%;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+
+        .title {
+            color: pink;
+        }
+
+        .highlight {
+            background-color: #444;
+            color: #fff;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor" contenteditable="true" id="editor"></div>
+    <script>
+        document.getElementById('editor').addEventListener('input', function (e) {
+            let content = e.target.innerHTML;
+
+            // Replace <> with pink color
+            content = content.replace(/&lt;(.*?)&gt;/g, '<span class="title">&lt;$1&gt;</span>');
+
+            // Replace {} with highlight
+            content = content.replace(/{(.*?)}/g, '<span class="highlight">{$1}</span>');
+
+            // Update the editor content
+            e.target.innerHTML = content;
+
+            // Place the caret at the end of the content
+            placeCaretAtEnd(e.target);
+        });
+
+        function placeCaretAtEnd(el) {
+            el.focus();
+            if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+                var range = document.createRange();
+                range.selectNodeContents(el);
+                range.collapse(false);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else if (typeof document.body.createTextRange != "undefined") {
+                var textRange = document.body.createTextRange();
+                textRange.moveToElementText(el);
+                textRange.collapse(false);
+                textRange.select();
+            }
+        }
+    </script>
+</body>
+</html>
